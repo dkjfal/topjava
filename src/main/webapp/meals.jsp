@@ -9,10 +9,15 @@
     <style>
         table {
             width: 800px;
-            border: 2px solid greenyellow;
+            border: 2px solid black;
         }
         td {
             text-align: center;
+            border: 2px solid #202020;
+        }
+        th {
+            border: 2px solid #202020;
+            background-color: silver;
         }
     </style>
 </head>

@@ -1,5 +1,6 @@
 package ru.javawebinar.topjava.web;
 
+import com.sun.istack.internal.Nullable;
 import org.slf4j.Logger;
 import ru.javawebinar.topjava.dao.MealDAOImpl;
 import ru.javawebinar.topjava.dao.MealDAO;
@@ -12,7 +13,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.Objects;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -34,11 +34,10 @@ public class MealServlet extends HttpServlet {
                 request.getRequestDispatcher("/meals.jsp").forward(request, response);
                 break;
             case "/topjava/meals/edit":
-                Integer id = request.getParameter("id") == null ? null :
-                        Integer.parseInt(request.getParameter("id"));
+                Integer id = getId(request);
                 Meal meal;
                 if (id != null) {
-                    meal = dao.getAll().get(id-1);
+                    meal = dao.get(id);
                 } else {
                     meal = new Meal();
                 }
@@ -61,8 +60,7 @@ public class MealServlet extends HttpServlet {
 
         Meal meal = new Meal();
 
-        meal.setId(Objects.equals(request.getParameter("id"), "") ? null :
-                Integer.parseInt(request.getParameter("id")));
+        meal.setId(getId(request));
         meal.setDescription(request.getParameter("description"));
         meal.setDateTime(LocalDateTime.parse(request.getParameter("dateTime")));
         meal.setCalories(Integer.parseInt(request.getParameter("calories")));
@@ -70,5 +68,13 @@ public class MealServlet extends HttpServlet {
         dao.save(meal);
 
         response.sendRedirect("/topjava/meals");
+    }
+
+    @Nullable
+    private Integer getId(HttpServletRequest request) {
+        String id = request.getParameter("id");
+        if (id == null || id.equals(""))
+            return null;
+        return Integer.valueOf(id);
     }
 }

@@ -4,6 +4,16 @@
 <head>
     <title>Meals</title>
     <meta charset="UTF-8" content="text/html">
+
+    <style>
+        form {
+            width: 300px;
+            border: 2px solid black;
+        }
+        input {
+            width: 250px;
+        }
+    </style>
 </head>
 <body>
 
@@ -38,8 +48,8 @@
             </label>
         </dl>
 
-        <input type="submit" value="ok">
-        <input type="button" value="cancel" onclick="window.location.href = '${pageContext.request.contextPath}/meals'">
+        <input style="width: 50px" type="submit" value="ok">
+        <input style="width: 50px" type="button" value="cancel" onclick="window.location.href = '${pageContext.request.contextPath}/meals'">
     </form>
 </section>
 </body>
