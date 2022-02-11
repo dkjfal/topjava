@@ -59,6 +59,6 @@ public class InMemoryUserRepository implements UserRepository {
                 return user;
         }
 
-        throw new NotFoundException("No such user with email: " + email);
+        throw new NotFoundException("No such user with email: " +  email);
     }
 }
