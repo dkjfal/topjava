@@ -1,6 +1,7 @@
-package ru.javawebinar.topjava.dao;
+package ru.javawebinar.topjava.repository.inmemory;
 
 import ru.javawebinar.topjava.model.Meal;
+import ru.javawebinar.topjava.repository.MealRepository;
 
 import java.time.LocalDateTime;
 import java.time.Month;
@@ -12,7 +13,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * Created by Polik on 2/3/2022
  */
-public class MealDAOImpl implements MealDAO {
+public class InMemoryMealRepository implements MealRepository {
     private final ConcurrentHashMap<Integer, Meal> meals;
     private final AtomicInteger lastId;
 

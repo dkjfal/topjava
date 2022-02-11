@@ -2,8 +2,8 @@ package ru.javawebinar.topjava.web;
 
 import com.sun.istack.internal.Nullable;
 import org.slf4j.Logger;
-import ru.javawebinar.topjava.dao.MealDAOImpl;
-import ru.javawebinar.topjava.dao.MealDAO;
+import ru.javawebinar.topjava.repository.inmemory.InMemoryMealRepository;
+import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.util.MealsUtil;
 
@@ -20,7 +20,7 @@ import static org.slf4j.LoggerFactory.getLogger;
  * Created by Polik on 2/3/2022
  */
 public class MealServlet extends HttpServlet {
-    private final MealDAO dao = new MealDAOImpl();
+    private final MealRepository dao = new InMemoryMealRepository();
     private final Logger log = getLogger(MealServlet.class);
 
     @Override
