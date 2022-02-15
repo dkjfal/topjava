@@ -1,10 +1,10 @@
 package ru.javawebinar.topjava.repository.inmemory;
 
+import org.springframework.stereotype.Repository;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 
 import java.time.LocalDateTime;
-import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -13,6 +13,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * Created by Polik on 2/3/2022
  */
+@Repository
 public class InMemoryMealRepository implements MealRepository {
     private final ConcurrentHashMap<Integer, Meal> meals;
     private final AtomicInteger lastId;
@@ -23,14 +24,13 @@ public class InMemoryMealRepository implements MealRepository {
     }
 
     @Override
-    public void save(Meal meal) {
-        if (meal.getId() == null) {
+    public Meal save(Meal meal) {
+        meal.setUserId(1); //fixme:
+        if (meal.isNew()) {
             meal.setId(lastId.getAndIncrement());
-            meals.put(meal.getId(), meal);
-        } else {
-            int id = meal.getId();
-            meals.put(id, meal);
         }
+
+        return meals.put(meal.getId(), meal);
     }
 
     @Override
@@ -39,19 +39,20 @@ public class InMemoryMealRepository implements MealRepository {
     }
 
     @Override
-    public void delete(int id) {
-        meals.remove(id);
+    public boolean delete(int id, int userId) {
+        return meals.entrySet()
+                .removeIf(el -> el.getKey() == id && el.getValue().getUserId() == userId);
     }
 
     {
         lastId = new AtomicInteger(1);
         meals = new ConcurrentHashMap<>();
-        save(new Meal(lastId.getAndIncrement(), LocalDateTime.of(2020, Month.JANUARY, 30, 10, 0), "Завтрак", 500));
-        save(new Meal(lastId.getAndIncrement(), LocalDateTime.of(2020, Month.JANUARY, 30, 13, 0), "Обед", 1000));
-        save(new Meal(lastId.getAndIncrement(), LocalDateTime.of(2020, Month.JANUARY, 30, 20, 0), "Ужин", 500));
-        save(new Meal(lastId.getAndIncrement(), LocalDateTime.of(2020, Month.JANUARY, 31, 0, 0), "Еда на граничное значение", 100));
-        save(new Meal(lastId.getAndIncrement(), LocalDateTime.of(2020, Month.JANUARY, 31, 10, 0), "Завтрак", 1000));
-        save(new Meal(lastId.getAndIncrement(), LocalDateTime.of(2020, Month.JANUARY, 31, 13, 0), "Обед", 500));
-        save(new Meal(lastId.getAndIncrement(), LocalDateTime.of(2020, Month.JANUARY, 31, 20, 0), "Ужин", 410));
+        save(new Meal(LocalDateTime.parse("2022-02-02T15:43"), "Description", 1337));
+        save(new Meal(LocalDateTime.parse("2022-02-02T15:41"), "Description", 1337));
+        save(new Meal(LocalDateTime.parse("2022-01-16T20:00"), "Description", 1337));
+        save(new Meal(LocalDateTime.parse("2022-01-13T13:00"), "Description", 1337));
+        save(new Meal(LocalDateTime.parse("2022-01-09T05:00"), "Description", 1337));
+        save(new Meal(LocalDateTime.parse("2021-12-28T10:57"), "Description", 1337));
+        save(new Meal(LocalDateTime.parse("2021-12-09T13:34"), "Description", 1337));
     }
 }

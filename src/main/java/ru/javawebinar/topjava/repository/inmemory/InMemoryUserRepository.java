@@ -3,6 +3,7 @@ package ru.javawebinar.topjava.repository.inmemory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
+import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.UserRepository;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
@@ -23,8 +24,7 @@ public class InMemoryUserRepository implements UserRepository {
     @Override
     public boolean delete(int id) {
         log.info("delete {}", id);
-        users.remove(id);
-        return true;
+        return users.remove(id) != null;
     }
 
     @Override
@@ -45,7 +45,8 @@ public class InMemoryUserRepository implements UserRepository {
     @Override
     public List<User> getAll() {
         log.info("getAll");
-        return users.values().stream()
+        return users.values()
+                .stream()
                 .sorted(Comparator.comparing(User::getName))
                 .collect(Collectors.toList());
     }
@@ -53,12 +54,10 @@ public class InMemoryUserRepository implements UserRepository {
     @Override
     public User getByEmail(String email) {
         log.info("getByEmail {}", email);
-        for (Map.Entry<Integer, User> entry : users.entrySet()) {
-            User user = entry.getValue();
-            if (user.getEmail().equals(email))
-                return user;
-        }
-
-        throw new NotFoundException("No such user with email: " +  email);
+        return users.values()
+                .stream()
+                .filter(el -> el.getEmail().equals(email))
+                .findFirst()
+                .orElse(null);
     }
 }

@@ -1,27 +1,40 @@
 package ru.javawebinar.topjava.web;
 
 import com.sun.istack.internal.Nullable;
-import org.slf4j.Logger;
-import ru.javawebinar.topjava.repository.inmemory.InMemoryMealRepository;
-import ru.javawebinar.topjava.repository.MealRepository;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import ru.javawebinar.topjava.model.Meal;
-import ru.javawebinar.topjava.util.MealsUtil;
+import ru.javawebinar.topjava.web.meal.MealRestController;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
-import static org.slf4j.LoggerFactory.getLogger;
+import static ru.javawebinar.topjava.web.SecurityUtil.*;
+import static ru.javawebinar.topjava.util.DateTimeUtil.*;
 
 /**
  * Created by Polik on 2/3/2022
  */
 public class MealServlet extends HttpServlet {
-    private final MealRepository dao = new InMemoryMealRepository();
-    private final Logger log = getLogger(MealServlet.class);
+    private MealRestController controller;
+    private ConfigurableApplicationContext appCtx;
+
+
+    public void init() {
+        appCtx = new ClassPathXmlApplicationContext("spring/spring-app.xml");
+        controller = appCtx.getBean(MealRestController.class);
+    }
+
+    public void destroy() {
+        appCtx.close();
+    }
+
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -29,25 +42,38 @@ public class MealServlet extends HttpServlet {
 
         switch (request.getRequestURI()) {
             case "/topjava/meals":
-                request.setAttribute("meals", MealsUtil.filteredByStreams(dao.getAll()
-                        , null, null, 2000));
-                request.getRequestDispatcher("/meals.jsp").forward(request, response);
+                if (request.getParameterMap().size() > 0) {
+                    LocalDate startDate = parseLocalDate(request.getParameter("startdate"), true);
+                    LocalDate enddate = parseLocalDate(request.getParameter("enddate"), false);
+                    LocalTime starttime = parseLocalTime(request.getParameter("starttime"), true);
+                    LocalTime endtime = parseLocalTime(request.getParameter("endtime"), false);
+
+                    LocalDateTime from = convertToLocalDateTime(startDate, starttime);
+                    LocalDateTime to = convertToLocalDateTime(enddate, endtime);
+
+                    request.setAttribute("meals", controller.getAllBetweenSelectedDate(from, to));
+                    request.getRequestDispatcher("/meals.jsp").forward(request, response);
+                } else {
+                    request.setAttribute("meals", controller.getAll());
+                    request.getRequestDispatcher("/meals.jsp").forward(request, response);
+                }
                 break;
             case "/topjava/meals/edit":
                 Integer id = getId(request);
                 Meal meal;
                 if (id != null) {
-                    meal = dao.get(id);
+                    meal = controller.get(id);
                 } else {
                     meal = new Meal();
                 }
 
+                meal.setUserId(authUserId());
                 request.setAttribute("meal", meal);
                 request.getRequestDispatcher("/edit-meal.jsp").forward(request, response);
                 break;
             case "/topjava/meals/delete":
                 id = Integer.parseInt(request.getParameter("id"));
-                dao.delete(id);
+                controller.delete(id); //fixme:
 
                 response.sendRedirect("/topjava/meals");
                 break;
@@ -64,8 +90,12 @@ public class MealServlet extends HttpServlet {
         meal.setDescription(request.getParameter("description"));
         meal.setDateTime(LocalDateTime.parse(request.getParameter("dateTime")));
         meal.setCalories(Integer.parseInt(request.getParameter("calories")));
+        meal.setUserId(Integer.parseInt(request.getParameter("userId")));
 
-        dao.save(meal);
+        if (meal.isNew())
+            controller.create(meal);
+        else
+            controller.update(meal);
 
         response.sendRedirect("/topjava/meals");
     }

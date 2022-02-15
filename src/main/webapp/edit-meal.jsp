@@ -29,6 +29,12 @@
                 <input type="number" value="${meal.id}" name="id">
             </label>
         </dl>
+        <dl hidden>
+            <dt>UserId:</dt>
+            <label>
+                <input type="number" value="${meal.userId}" name="userId">
+            </label>
+        </dl>
         <dl>
             <dt>DateTime:</dt>
             <label>

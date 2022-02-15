@@ -27,6 +27,21 @@
     <h2>Meals</h2>
     <a href="meals/edit">Add meal</a>
     <br><br>
+
+    <form action="meals">
+        <dl>
+            От даты (включая) <input type="date" name="startdate" value="${param.startdate}">
+            До даты (включая) <input type="date" name="enddate" value="${param.enddate}">
+        </dl>
+
+        <dl>
+            От времени (включая) <input type="time" name="starttime" value="${param.starttime}">
+            До времени (исключая) <input type="time" name="endtime" value="${param.endtime}">
+        </dl>
+
+        <button type="submit">ok</button>
+    </form>
+
     <table>
 
         <tr>

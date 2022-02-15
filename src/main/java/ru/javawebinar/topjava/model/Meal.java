@@ -4,16 +4,16 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
-public class Meal {
-    private Integer id;
+public class Meal extends AbstractBaseEntity implements Comparable<Meal> {
     private LocalDateTime dateTime;
     private String description;
     private int calories;
+    private Integer userId;
     private LocalTime localTime;
     private LocalDate localDate;
 
     public Meal(Integer id, LocalDateTime dateTime, String description, int calories) {
-        this.id = id;
+        super(id);
         this.dateTime = dateTime;
         this.description = description;
         this.calories = calories;
@@ -22,6 +22,7 @@ public class Meal {
     }
 
     public Meal (LocalDateTime dateTime, String description, int calories) {
+        super(null);
         this.dateTime = dateTime;
         this.description = description;
         this.calories = calories;
@@ -30,6 +31,12 @@ public class Meal {
     }
 
     public Meal() {
+        super(null);
+    }
+
+    @Override
+    public int compareTo(Meal that) {
+        return that.getDateTime().compareTo(this.dateTime);
     }
 
     public void setDescription(String description) {
@@ -40,6 +47,14 @@ public class Meal {
         if (localDate == null)
             return LocalDateTime.now();
         return dateTime;
+    }
+
+    public Integer getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
     public String getDescription() {
@@ -59,11 +74,11 @@ public class Meal {
     }
 
     public LocalDate getDate() {
-        return dateTime.toLocalDate();
+        return localDate;
     }
 
     public LocalTime getTime() {
-        return dateTime.toLocalTime();
+        return localTime;
     }
 
     public void setDateTime(LocalDateTime dateTime) {
@@ -91,6 +106,7 @@ public class Meal {
                 ", dateTime=" + dateTime +
                 ", description='" + description + '\'' +
                 ", calories=" + calories +
+                ", userId=" + userId +
                 '}';
     }
 }
