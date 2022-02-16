@@ -4,7 +4,6 @@ import org.springframework.stereotype.Repository;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -25,7 +24,6 @@ public class InMemoryMealRepository implements MealRepository {
 
     @Override
     public Meal save(Meal meal) {
-        meal.setUserId(1); //fixme:
         if (meal.isNew()) {
             meal.setId(lastId.getAndIncrement());
         }
@@ -47,12 +45,5 @@ public class InMemoryMealRepository implements MealRepository {
     {
         lastId = new AtomicInteger(1);
         meals = new ConcurrentHashMap<>();
-        save(new Meal(LocalDateTime.parse("2022-02-02T15:43"), "Description", 1337));
-        save(new Meal(LocalDateTime.parse("2022-02-02T15:41"), "Description", 1337));
-        save(new Meal(LocalDateTime.parse("2022-01-16T20:00"), "Description", 1337));
-        save(new Meal(LocalDateTime.parse("2022-01-13T13:00"), "Description", 1337));
-        save(new Meal(LocalDateTime.parse("2022-01-09T05:00"), "Description", 1337));
-        save(new Meal(LocalDateTime.parse("2021-12-28T10:57"), "Description", 1337));
-        save(new Meal(LocalDateTime.parse("2021-12-09T13:34"), "Description", 1337));
     }
 }

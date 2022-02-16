@@ -35,7 +35,6 @@ public class MealServlet extends HttpServlet {
         appCtx.close();
     }
 
-
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
@@ -73,7 +72,7 @@ public class MealServlet extends HttpServlet {
                 break;
             case "/topjava/meals/delete":
                 id = Integer.parseInt(request.getParameter("id"));
-                controller.delete(id); //fixme:
+                controller.delete(id);
 
                 response.sendRedirect("/topjava/meals");
                 break;

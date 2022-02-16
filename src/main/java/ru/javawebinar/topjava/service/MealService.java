@@ -5,6 +5,7 @@ import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.to.MealTo;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static ru.javawebinar.topjava.util.MealsUtil.filteredByStreams;
@@ -28,6 +29,7 @@ public class MealService {
     }
 
     public List<MealTo> getAll(int userId) {
+
         return filteredByStreams(filteredByUserId(repository.getAll(), userId)
                 , null, null, 2000);
     }

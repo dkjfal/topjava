@@ -22,7 +22,6 @@ public class DateTimeUtil {
             return isBetweenLocalTime(lt.toLocalTime(), (LocalTime) startTime, (LocalTime) endTime);
     }
 
-    // fixme: костыль
     public static LocalDateTime convertToLocalDateTime(LocalDate date, LocalTime time) {
         return LocalDateTime.of(date, time);
     }

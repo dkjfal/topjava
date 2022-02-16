@@ -8,6 +8,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import static ru.javawebinar.topjava.web.SecurityUtil.*;
+
 import static org.slf4j.LoggerFactory.getLogger;
 
 public class UserServlet extends HttpServlet {
@@ -19,5 +21,16 @@ public class UserServlet extends HttpServlet {
 
 //        request.getRequestDispatcher("/users.jsp").forward(request, response);
         response.sendRedirect("users.jsp");
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        req.setCharacterEncoding("UTF-8");
+        log.info("redirect to meals");
+
+        int userId = Integer.parseInt(req.getParameter("userId"));
+        setAuthUserId(userId);
+
+        resp.sendRedirect("/topjava/meals");
     }
 }
