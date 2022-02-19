@@ -1,7 +1,7 @@
-package java.ru.javawebinar.topjava.repository.inmemory;
+package ru.javawebinar.topjava.repository.inmemory;
 
 import org.springframework.stereotype.Repository;
-import java.ru.javawebinar.topjava.UserTestData;
+import ru.javawebinar.topjava.UserTestData;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.UserRepository;
 
@@ -9,8 +9,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static java.ru.javawebinar.topjava.UserTestData.*;
-
+import static ru.javawebinar.topjava.UserTestData.*;
 
 @Repository
 public class InMemoryUserRepository extends InMemoryBaseRepository<User> implements UserRepository {
