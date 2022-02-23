@@ -1,8 +1,10 @@
 package ru.javawebinar.topjava.util;
 
+import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.util.StringUtils;
 
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -28,13 +30,18 @@ public class DateTimeUtil {
         return ldt == null ? "" : ldt.format(DATE_TIME_FORMATTER);
     }
 
-    public static @Nullable
-    LocalDate parseLocalDate(@Nullable String str) {
+    public static Timestamp parseTimeStamp(LocalDateTime localDateTime, boolean start) {
+        if (start)
+            return localDateTime == null ? Timestamp.valueOf(MIN_DATE) : Timestamp.valueOf(localDateTime);
+        else
+            return localDateTime == null ? Timestamp.valueOf(MAX_DATE) : Timestamp.valueOf(localDateTime);
+    }
+
+    public static @Nullable LocalDate parseLocalDate(@Nullable String str) {
         return StringUtils.hasLength(str) ? LocalDate.parse(str) : null;
     }
 
-    public static @Nullable
-    LocalTime parseLocalTime(@Nullable String str) {
+    public static @Nullable LocalTime parseLocalTime(@Nullable String str) {
         return StringUtils.hasLength(str) ? LocalTime.parse(str) : null;
     }
 }
