@@ -3,7 +3,6 @@ package ru.javawebinar.topjava.service;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Rule;
-import org.junit.Test;
 import org.junit.rules.Stopwatch;
 import org.junit.runner.Description;
 import org.junit.runner.RunWith;
@@ -29,20 +28,25 @@ import static ru.javawebinar.topjava.MealTestData.*;
 import static ru.javawebinar.topjava.UserTestData.ADMIN_ID;
 import static ru.javawebinar.topjava.UserTestData.USER_ID;
 
+/**
+ * Created by Polik on 3/7/2022
+ */
 @ContextConfiguration({
         "classpath:spring/spring-app.xml",
         "classpath:spring/spring-db.xml"
 })
-@RunWith(SpringRunner.class)
 @Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"))
+@RunWith(SpringRunner.class)
 @ActiveProfiles(resolver = ActiveDbProfileResolver.class)
-public class MealServiceTest {
-    private static final Logger log = getLogger("result");
+public abstract class AbstractMealServiceTest {
+    protected static final Logger log = getLogger("result");
 
-    private static final StringBuilder results = new StringBuilder();
+    protected static final StringBuilder results = new StringBuilder();
+
+    @Autowired
+    protected MealService service;
 
     @Rule
-    // http://stackoverflow.com/questions/14892125/what-is-the-best-practice-to-determine-the-execution-time-of-the-bussiness-relev
     public final Stopwatch stopwatch = new Stopwatch() {
         @Override
         protected void finished(long nanos, Description description) {
@@ -51,9 +55,6 @@ public class MealServiceTest {
             log.info(result + " ms\n");
         }
     };
-
-    @Autowired
-    private MealService service;
 
     @AfterClass
     public static void printResult() {
@@ -64,24 +65,20 @@ public class MealServiceTest {
                 "\n---------------------------------");
     }
 
-    @Test
-    public void delete() {
+    protected void delete() {
         service.delete(MEAL1_ID, USER_ID);
         assertThrows(NotFoundException.class, () -> service.get(MEAL1_ID, USER_ID));
     }
 
-    @Test
-    public void deleteNotFound() {
+    protected void deleteNotFound() {
         assertThrows(NotFoundException.class, () -> service.delete(NOT_FOUND, USER_ID));
     }
 
-    @Test
-    public void deleteNotOwn() {
+    protected void deleteNotOwn() {
         assertThrows(NotFoundException.class, () -> service.delete(MEAL1_ID, ADMIN_ID));
     }
 
-    @Test
-    public void create() {
+    protected void create() {
         Meal created = service.create(getNew(), USER_ID);
         int newId = created.id();
         Meal newMeal = getNew();
@@ -90,57 +87,48 @@ public class MealServiceTest {
         MEAL_MATCHER.assertMatch(service.get(newId, USER_ID), newMeal);
     }
 
-    @Test
-    public void duplicateDateTimeCreate() {
+    protected void duplicateDateTimeCreate() {
         assertThrows(DataAccessException.class, () ->
                 service.create(new Meal(null, meal1.getDateTime(), "duplicate", 100), USER_ID));
     }
 
-    @Test
-    public void get() {
+    protected void get() {
         Meal actual = service.get(ADMIN_MEAL_ID, ADMIN_ID);
         MEAL_MATCHER.assertMatch(actual, adminMeal1);
     }
 
-    @Test
-    public void getNotFound() {
+    protected void getNotFound() {
         assertThrows(NotFoundException.class, () -> service.get(NOT_FOUND, USER_ID));
     }
 
-    @Test
-    public void getNotOwn() {
+    protected void getNotOwn() {
         assertThrows(NotFoundException.class, () -> service.get(MEAL1_ID, ADMIN_ID));
     }
 
-    @Test
-    public void update() {
+    protected void update() {
         Meal updated = getUpdated();
         service.update(updated, USER_ID);
         MEAL_MATCHER.assertMatch(service.get(MEAL1_ID, USER_ID), getUpdated());
     }
 
-    @Test
-    public void updateNotOwn() {
+    protected void updateNotOwn() {
         NotFoundException exception = assertThrows(NotFoundException.class, () -> service.update(getUpdated(), ADMIN_ID));
         Assert.assertEquals("Not found entity with id=" + MEAL1_ID, exception.getMessage());
         MEAL_MATCHER.assertMatch(service.get(MEAL1_ID, USER_ID), meal1);
     }
 
-    @Test
-    public void getAll() {
+    protected void getAll() {
         MEAL_MATCHER.assertMatch(service.getAll(USER_ID), meals);
     }
 
-    @Test
-    public void getBetweenInclusive() {
+    protected void getBetweenInclusive() {
         MEAL_MATCHER.assertMatch(service.getBetweenInclusive(
                         LocalDate.of(2020, Month.JANUARY, 30),
                         LocalDate.of(2020, Month.JANUARY, 30), USER_ID),
                 meal3, meal2, meal1);
     }
 
-    @Test
-    public void getBetweenWithNullDates() {
+    protected void getBetweenWithNullDates() {
         MEAL_MATCHER.assertMatch(service.getBetweenInclusive(null, null, USER_ID), meals);
     }
 }
