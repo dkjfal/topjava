@@ -2,12 +2,31 @@ package ru.javawebinar.topjava.util;
 
 
 import org.springframework.core.NestedExceptionUtils;
+import org.springframework.jdbc.datasource.init.UncategorizedScriptException;
 import org.springframework.lang.NonNull;
 import ru.javawebinar.topjava.model.AbstractBaseEntity;
+import ru.javawebinar.topjava.model.Meal;
+import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import javax.validation.Validation;
+import javax.validation.ValidatorFactory;
+import java.util.Set;
+
 public class ValidationUtil {
+    private static final ValidatorFactory VALIDATOR_FACTORY = Validation.buildDefaultValidatorFactory();
+
     private ValidationUtil() {
+
+    }
+
+    public static <T extends AbstractBaseEntity> void validate(T obj) {
+        Set<ConstraintViolation<T>> violations = VALIDATOR_FACTORY.getValidator().validate(obj);
+
+        if (violations.size() != 0)
+            throw new ConstraintViolationException(violations);
     }
 
     public static <T> T checkNotFoundWithId(T object, int id) {
