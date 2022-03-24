@@ -1,9 +1,9 @@
 package ru.javawebinar.topjava.repository.jdbc;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -13,18 +13,17 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.UserRepository;
+import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.List;
 
-import static ru.javawebinar.topjava.util.ValidationUtil.*;
+import static ru.javawebinar.topjava.util.ValidationUtil.validate;
 
 @Repository
 @Transactional(readOnly = true)
 public class JdbcUserRepository implements UserRepository {
-
-    private static final BeanPropertyRowMapper<User> ROW_MAPPER = BeanPropertyRowMapper.newInstance(User.class);
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -72,21 +71,31 @@ public class JdbcUserRepository implements UserRepository {
 
     @Override
     public User get(int id) {
-        List<User> users = jdbcTemplate.query("SELECT * FROM users WHERE id=?", ROW_MAPPER, id);
-        return setRoles(DataAccessUtils.singleResult(users));
+        try {
+            List<User> users = jdbcTemplate.queryForObject("SELECT * FROM users JOIN user_roles ur on users.id = ur.user_id WHERE id=?", new UserMapper(), id);
+            return DataAccessUtils.singleResult(users);
+        } catch (EmptyResultDataAccessException ex) {
+            throw new NotFoundException(ex.getMessage());
+        }
     }
 
     @Override
     public User getByEmail(String email) {
-        List<User> users = jdbcTemplate.query("SELECT * FROM users WHERE email=?", ROW_MAPPER, email);
-        return setRoles(DataAccessUtils.singleResult(users));
+        try {
+            List<User> users = jdbcTemplate.queryForObject("SELECT * FROM users JOIN user_roles ur on users.id = ur.user_id WHERE email=?", new UserMapper(), email);
+            return DataAccessUtils.singleResult(users);
+        } catch (EmptyResultDataAccessException ex) {
+            throw new NotFoundException(ex.getMessage());
+        }
     }
 
     @Override
     public List<User> getAll() {
-        return jdbcTemplate.query("SELECT * FROM users ORDER BY name, email", ROW_MAPPER).stream()
-                .peek(this::setRoles)
-                .toList();
+        try {
+            return jdbcTemplate.queryForObject("SELECT * FROM users JOIN user_roles ur on users.id = ur.user_id ORDER BY name, email", new UserMapper());
+        } catch (EmptyResultDataAccessException ex) {
+            throw new NotFoundException(ex.getMessage());
+        }
     }
 
     @Transactional
@@ -113,16 +122,6 @@ public class JdbcUserRepository implements UserRepository {
                     public int getBatchSize() {
                         return roles.size();
                     }
-        });
-    }
-
-    // fixme: n+1
-    private User setRoles(User user) {
-        if (user == null) return null;
-
-        List<Role> roles = jdbcTemplate.queryForList("SELECT role FROM user_roles WHERE user_id=?", Role.class, user.getId());
-        user.setRoles(roles);
-
-        return user;
+                });
     }
 }

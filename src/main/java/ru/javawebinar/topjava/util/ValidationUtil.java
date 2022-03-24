@@ -2,11 +2,8 @@ package ru.javawebinar.topjava.util;
 
 
 import org.springframework.core.NestedExceptionUtils;
-import org.springframework.jdbc.datasource.init.UncategorizedScriptException;
 import org.springframework.lang.NonNull;
 import ru.javawebinar.topjava.model.AbstractBaseEntity;
-import ru.javawebinar.topjava.model.Meal;
-import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import javax.validation.ConstraintViolation;
