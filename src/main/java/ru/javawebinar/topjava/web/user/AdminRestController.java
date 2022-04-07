@@ -22,6 +22,15 @@ public class AdminRestController extends AbstractUserController {
         return super.getAll();
     }
 
+    @PostMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void toggle(@PathVariable int id) {
+        User user = super.get(id);
+        user.toggle();
+
+        super.update(user, id);
+    }
+
     @Override
     @GetMapping("/{id}")
     public User get(@PathVariable int id) {

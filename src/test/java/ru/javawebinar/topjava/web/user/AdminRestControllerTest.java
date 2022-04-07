@@ -2,6 +2,7 @@ package ru.javawebinar.topjava.web.user;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -83,6 +84,20 @@ class AdminRestControllerTest extends AbstractControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(USER_MATCHER.contentJson(admin, guest, user));
+    }
+
+    @Test
+    void disable() throws Exception {
+        perform(MockMvcRequestBuilders.post(REST_URL + user.getId()))
+                .andExpect(status().isNoContent());
+
+        User disabled = user;
+        user.toggle();
+
+        perform(MockMvcRequestBuilders.get(REST_URL + disabled.getId()))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(USER_MATCHER.contentJson(disabled));
     }
 
     @Test

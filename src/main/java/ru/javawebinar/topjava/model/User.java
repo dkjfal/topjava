@@ -147,6 +147,10 @@ public class User extends AbstractNamedEntity {
         return meals;
     }
 
+    public void toggle() {
+        enabled = !enabled;
+    }
+
     public void setMeals(List<Meal> meals) {
         this.meals = meals;
     }

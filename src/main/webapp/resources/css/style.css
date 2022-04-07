@@ -15,6 +15,14 @@ dd {
     vertical-align: top;
 }
 
+tr[data-user-enabled="false"] {
+    opacity: 50%;
+}
+
+tr[data-user-enabled="true"] {
+    opacity: 100%;
+}
+
 tr[data-meal-excess="false"] {
     color: green;
 }

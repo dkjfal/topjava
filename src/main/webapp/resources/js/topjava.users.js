@@ -1,9 +1,23 @@
 const userAjaxUrl = "admin/users/";
+const adminAjaxUrl = "rest/admin/users/"
 
 // https://stackoverflow.com/a/5064235/548473
 const ctx = {
-    ajaxUrl: userAjaxUrl
+    ajaxUrl: userAjaxUrl,
+    updateTable: function () {
+        $.get(userAjaxUrl, updateTableByData)
+    }
 };
+
+function handleClick(id, action) {
+    $.ajax({
+        url: adminAjaxUrl + id,
+        type: "POST"
+    }).done(function () {
+        ctx.updateTable();
+        successNoty(!action ? "User is enabled" : "User is disabled");
+    });
+}
 
 // $(document).ready(function () {
 $(function () {
