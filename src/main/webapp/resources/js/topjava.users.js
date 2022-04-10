@@ -64,7 +64,7 @@ $(function () {
                         if (type === "display") {
                             return date.substring(0, 10);
                         }
-                        return date;
+                        return date.substring(0, 10);
                     }
                 },
                 {
