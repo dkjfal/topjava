@@ -4,6 +4,13 @@
 <%@ taglib prefix="fn" uri="http://topjava.javawebinar.ru/functions" %>
 <html>
 <jsp:include page="fragments/headTag.jsp"/>
+
+<head>
+    <script src="webjars/jquery/3.6.0/jquery.min.js"></script>
+    <link rel="stylesheet" href="webjars/datetimepicker/2.5.20-1/jquery.datetimepicker.css">
+    <script src="webjars/datetimepicker/2.5.20-1/build/jquery.datetimepicker.full.min.js" defer></script>
+</head>
+
 <body>
 <script type="text/javascript" src="resources/js/topjava.common.js" defer></script>
 <script type="text/javascript" src="resources/js/topjava.meals.js" defer></script>
@@ -19,19 +26,19 @@
                     <div class="row">
                         <div class="col-3">
                             <label for="startDate"><spring:message code="meal.startDate"/></label>
-                            <input class="form-control" type="date" name="startDate" id="startDate">
+                            <input class="form-control" type="text" name="startDate" id="startDate">
                         </div>
                         <div class="col-3">
                             <label for="endDate"><spring:message code="meal.endDate"/></label>
-                            <input class="form-control" type="date" name="endDate" id="endDate">
+                            <input class="form-control" type="text" name="endDate" id="endDate">
                         </div>
                         <div class="offset-2 col-2">
                             <label for="startTime"><spring:message code="meal.startTime"/></label>
-                            <input class="form-control" type="time" name="startTime" id="startTime">
+                            <input class="form-control" type="text" name="startTime" id="startTime">
                         </div>
                         <div class="col-2">
                             <label for="endTime"><spring:message code="meal.endTime"/></label>
-                            <input class="form-control" type="time" name="endTime" id="endTime">
+                            <input class="form-control" type="text" name="endTime" id="endTime">
                         </div>
                     </div>
                 </form>
@@ -112,6 +119,35 @@
 </div>
 <jsp:include page="fragments/footer.jsp"/>
 </body>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#startDate').datetimepicker({
+            timepicker:false,
+            format:'Y-m-d',
+            theme: 'dark'
+        })
+
+        $('#endDate').datetimepicker({
+            timepicker:false,
+            format:'Y-m-d',
+            theme: 'dark'
+        })
+
+        $('#startTime').datetimepicker({
+            datepicker:false,
+            format:'H:i',
+            theme: 'dark'
+        })
+
+        $('#endTime').datetimepicker({
+            datepicker:false,
+            format:'H:i',
+            theme: 'dark'
+        })
+    });
+</script>
+
 <script type="text/javascript">
     const i18n = [];
     i18n["addTitle"] = '<spring:message code="meal.add"/>';
