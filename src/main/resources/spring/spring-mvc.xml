@@ -70,7 +70,20 @@
         <property name="fallbackToSystemLocale" value="false"/>
     </bean>
 
+    <bean id="localeResolver"
+          class="org.springframework.web.servlet.i18n.CookieLocaleResolver"
+    />
+
     <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/**" />
+            <mvc:exclude-mapping path="/resources/**" />
+            <mvc:exclude-mapping path="/**/*.html" />
+            <bean
+                    class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
+            </bean>
+        </mvc:interceptor>
+
         <bean class="ru.javawebinar.topjava.web.interceptor.ModelInterceptor"/>
     </mvc:interceptors>
 </beans>

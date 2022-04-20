@@ -16,6 +16,7 @@
   limitations under the License.
 -->
 <!-- The contents of this file will be loaded for each web application -->
+
 <Context>
 
     <!-- Default set of monitored resources. If one of these changes, the    -->
@@ -33,6 +34,7 @@
     <!--
     <Valve className="org.apache.catalina.valves.CometConnectionManagerValve" />
     -->
+
     <Resource name="jdbc/topjava"
               auth="Container"
               type="javax.sql.DataSource"

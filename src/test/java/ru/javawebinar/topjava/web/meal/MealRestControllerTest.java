@@ -41,6 +41,15 @@ class MealRestControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    void createWithDuplicateDateTime() throws Exception {
+        perform(MockMvcRequestBuilders.post(REST_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(meal1))
+                .with(userHttpBasic(user)))
+                .andExpect(status().isUnprocessableEntity());
+    }
+
+    @Test
     void getUnauth() throws Exception {
         perform(MockMvcRequestBuilders.get(REST_URL + MEAL1_ID))
                 .andExpect(status().isUnauthorized());

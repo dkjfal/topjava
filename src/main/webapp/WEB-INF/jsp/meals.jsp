@@ -7,6 +7,8 @@
 <body>
 <script type="text/javascript" src="resources/js/topjava.common.js" defer></script>
 <script type="text/javascript" src="resources/js/topjava.meals.js" defer></script>
+<a href='${pageContext.request.contextPath}/meals?locale=en'>English</a>
+<a href='${pageContext.request.contextPath}/meals?locale=ru'>Russian</a>
 <jsp:include page="fragments/bodyHeader.jsp"/>
 
 <div class="jumbotron pt-4">

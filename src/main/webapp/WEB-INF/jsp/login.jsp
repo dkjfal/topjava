@@ -6,6 +6,8 @@
 <html>
 <jsp:include page="fragments/headTag.jsp"/>
 <body>
+<a href='${pageContext.request.contextPath}/login?locale=en'>English</a>
+<a href='${pageContext.request.contextPath}/login?locale=ru'>Russian</a>
 <jsp:include page="fragments/bodyHeader.jsp"/>
 
 <div class="jumbotron py-0">

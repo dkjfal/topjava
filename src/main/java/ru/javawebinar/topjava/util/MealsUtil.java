@@ -4,6 +4,7 @@ import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.to.MealTo;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Collection;
 import java.util.List;
@@ -35,6 +36,13 @@ public class MealsUtil {
                 .filter(filter)
                 .map(meal -> createTo(meal, caloriesSumByDate.get(meal.getDate()) > caloriesPerDay))
                 .toList();
+    }
+
+    public static Meal getByDateTime(List<Meal> meals, LocalDateTime dateTime) {
+        return meals.stream()
+                .filter(el -> el.getDateTime().equals(dateTime))
+                .findFirst()
+                .orElse(null);
     }
 
     public static MealTo createTo(Meal meal, boolean excess) {

@@ -8,6 +8,8 @@
 <body>
 <script src="resources/js/topjava.common.js" defer></script>
 <script src="resources/js/topjava.users.js" defer></script>
+<a href='${pageContext.request.contextPath}/users?locale=en'>English</a>
+<a href='${pageContext.request.contextPath}/users?locale=ru'>Russian</a>
 <jsp:include page="fragments/bodyHeader.jsp"/>
 
 <div class="jumbotron pt-4">
